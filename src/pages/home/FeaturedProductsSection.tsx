@@ -176,7 +176,7 @@ function ProductCard({ product }: { product: typeof products[0] }) {
         <div className="flex items-center justify-between">
           <div className="flex items-baseline gap-2">
             <span className="font-display font-bold text-lg text-neutral-900">
-              ${product.discountPrice > 0 ? product.discountPrice.toFixed(2) : product.price.toFixed(2)}
+              ₹{product.discountPrice > 0 ? product.discountPrice.toFixed(2) : product.price.toFixed(2)}
             </span>
             {product.discountPrice > 0 && (
               <span className="text-xs text-neutral-400 line-through">${product.price.toFixed(2)}</span>
