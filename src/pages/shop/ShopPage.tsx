@@ -7,6 +7,10 @@ import FilterPanel from '../../components/common/FilterPanel';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import productService from '../../services/productService';
 import type { Product } from '../../services/productService';
+import { useCart }     from '../../context/CartContext';
+import { useWishlist } from '../../context/WishlistContext';
+import { useAuth }     from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -22,15 +26,47 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 function ProductCard({ product }: { product: Product }) {
+  const { addToCart, isLoading } = useCart();
+  const { isInWishlist, toggleWishlist } = useWishlist();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const [adding, setAdding] = useState(false);
+  const [wishlisting, setWishlisting] = useState(false);
+
   const discount = product.discountPrice > 0
     ? Math.round(((product.price - product.discountPrice) / product.price) * 100)
     : 0;
+
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.preventDefault(); // Link navigate mat karo
+    if (!isAuthenticated) { navigate('/login'); return; }
+    setAdding(true);
+    try {
+      await addToCart(product._id, 1);
+    } catch (err: any) {
+      alert(err.response?.data?.message || 'Failed to add');
+    } finally {
+      setAdding(false);
+    }
+  };
+
+  const handleWishlist = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!isAuthenticated) { navigate('/login'); return; }
+    setWishlisting(true);
+    try {
+      await toggleWishlist(product._id);
+    } finally {
+      setWishlisting(false);
+    }
+  };
 
   return (
     <motion.div
       whileHover={{ y: -4 }}
       transition={{ duration: 0.2 }}
-      className="card group flex flex-col overflow-hidden"
+      className="card group flex flex-col overflow-hidden cursor-pointer"
+      onClick={() => navigate(`/product/${product._id}`)}
     >
       <div className="relative overflow-hidden">
         <img
@@ -46,13 +82,29 @@ function ProductCard({ product }: { product: Product }) {
             -{discount}%
           </span>
         )}
+
+        {/* ✅ Hover buttons */}
         <div className="absolute inset-x-0 bottom-0 flex gap-2 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-          <button className="flex-1 flex items-center justify-center gap-1.5 bg-white/95 backdrop-blur-sm rounded-xl py-2 text-xs font-semibold text-neutral-800 hover:bg-primary-500 hover:text-white transition-all duration-200 shadow-sm">
+          <button
+            onClick={handleAddToCart}
+            disabled={adding || product.stock === 0}
+            className="flex-1 flex items-center justify-center gap-1.5 bg-white/95 backdrop-blur-sm rounded-xl py-2 text-xs font-semibold text-neutral-800 hover:bg-primary-500 hover:text-white transition-all duration-200 shadow-sm disabled:opacity-60"
+          >
             <ShoppingCart className="w-3.5 h-3.5" />
-            Add
+            {adding ? 'Adding...' : product.stock === 0 ? 'Out of Stock' : 'Add'}
           </button>
-          <button className="w-9 h-9 flex items-center justify-center bg-white/95 backdrop-blur-sm rounded-xl hover:bg-primary-50 transition-colors duration-200 shadow-sm text-neutral-600 hover:text-primary-500">
-            <Heart className="w-4 h-4" />
+          <button
+            onClick={handleWishlist}
+            disabled={wishlisting}
+            className={`w-9 h-9 flex items-center justify-center bg-white/95 backdrop-blur-sm rounded-xl transition-colors duration-200 shadow-sm ${
+              isInWishlist(product._id)
+                ? 'text-red-500'
+                : 'text-neutral-600 hover:text-red-500'
+            }`}
+          >
+            <Heart
+              className={`w-4 h-4 ${isInWishlist(product._id) ? 'fill-red-500' : ''}`}
+            />
           </button>
         </div>
       </div>
@@ -73,10 +125,12 @@ function ProductCard({ product }: { product: Product }) {
         <div className="flex items-center justify-between">
           <div className="flex items-baseline gap-2">
             <span className="font-display font-bold text-lg text-neutral-900">
-              ₹{product.discountPrice > 0 ? product.discountPrice.toFixed(2) : product.price.toFixed(2)}
+              ₹{(product.discountPrice > 0 ? product.discountPrice : product.price).toLocaleString('en-IN')}
             </span>
             {product.discountPrice > 0 && (
-              <span className="text-xs text-neutral-400 line-through">₹{product.price.toFixed(2)}</span>
+              <span className="text-xs text-neutral-400 line-through">
+                ₹{product.price.toLocaleString('en-IN')}
+              </span>
             )}
           </div>
           <span className="text-2xs font-medium text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full">

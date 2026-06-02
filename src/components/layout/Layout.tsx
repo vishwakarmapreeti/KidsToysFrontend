@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import CartDrawer from '../cart/CartDrawer';
 
 interface LayoutProps {
   children: ReactNode;
@@ -15,6 +16,7 @@ export default function Layout({ children, hideFooter = false }: LayoutProps) {
         {children}
       </main>
       {!hideFooter && <Footer />}
+         <CartDrawer />
     </div>
   );
 }

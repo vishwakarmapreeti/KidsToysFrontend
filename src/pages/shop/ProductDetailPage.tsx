@@ -7,6 +7,9 @@ import LoadingSpinner from '../../components/common/LoadingSpinner';
 import AlertMessage from '../../components/common/AlertMessage';
 import productService from '../../services/productService';
 import type { Product } from '../../services/productService';
+import { useAuth }      from '../../context/AuthContext';
+import { useCart }      from '../../context/CartContext';
+import { useWishlist }  from '../../context/WishlistContext';
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -30,6 +33,14 @@ export default function ProductDetailPage() {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
+  const { isAuthenticated }              = useAuth();
+const { addToCart, isLoading: cartLoading } = useCart();
+const { isInWishlist, toggleWishlist } = useWishlist();
+
+
+const [wishlistLoading, setWishlistLoading] = useState(false);
+const [cartError, setCartError]             = useState('');
+
 
   useEffect(() => {
     loadProduct();
@@ -78,10 +89,33 @@ export default function ProductDetailPage() {
     : 0;
   const displayPrice = product.discountPrice > 0 ? product.discountPrice : product.price;
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
+  if (!isAuthenticated) {
+    navigate('/login');
+    return;
+  }
+  setCartError('');
+  try {
+    await addToCart(product!._id, quantity);
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
-  };
+  } catch (err: any) {
+    setCartError(err.response?.data?.message || 'Failed to add to cart');
+  }
+};
+
+const handleWishlist = async () => {
+  if (!isAuthenticated) {
+    navigate('/login');
+    return;
+  }
+  setWishlistLoading(true);
+  try {
+    await toggleWishlist(product!._id);
+  } finally {
+    setWishlistLoading(false);
+  }
+};
 
   const handleQuantityChange = (value: number) => {
     if (value >= 1 && value <= product.stock) {
@@ -158,9 +192,21 @@ export default function ProductDetailPage() {
                     {product.name}
                   </h1>
                 </div>
-                <button className="p-2.5 rounded-xl hover:bg-neutral-100 transition-colors text-neutral-600 hover:text-error-500">
-                  <Heart className="w-6 h-6" />
-                </button>
+               <button
+  onClick={handleWishlist}
+  disabled={wishlistLoading}
+  className={`p-2.5 rounded-xl hover:bg-neutral-100 transition-colors ${
+    isInWishlist(product._id)
+      ? 'text-red-500'
+      : 'text-neutral-600 hover:text-red-500'
+  }`}
+>
+  <Heart
+    className={`w-6 h-6 transition-all ${
+      isInWishlist(product._id) ? 'fill-red-500' : ''
+    }`}
+  />
+</button>
               </div>
 
               {/* Rating */}
@@ -255,15 +301,25 @@ export default function ProductDetailPage() {
                 </div>
               </div>
 
-              <button
-                onClick={handleAddToCart}
-                disabled={product.stock === 0}
-                className="btn-primary w-full py-3.5 text-base"
-              >
-                <ShoppingCart className="w-5 h-5" />
-                Add to Cart
-                <ChevronRight className="w-4 h-4" />
-              </button>
+           <button
+  onClick={handleAddToCart}
+  disabled={product.stock === 0 || cartLoading}
+  className="btn-primary w-full py-3.5 text-base"
+>
+  {cartLoading ? (
+    <>Loading...</>
+  ) : (
+    <>
+      <ShoppingCart className="w-5 h-5" />
+      Add to Cart
+      <ChevronRight className="w-4 h-4" />
+    </>
+  )}
+</button>
+
+{cartError && (
+  <p className="text-red-500 text-sm">{cartError}</p>
+)}
 
               {addedToCart && (
                 <motion.div
