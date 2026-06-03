@@ -10,6 +10,7 @@ export interface CartItem {
     discountPrice: number;
     stock:         number;
     slug:          string;
+    category?:     { name: string } | string;
   };
   quantity: number;
   price:    number;

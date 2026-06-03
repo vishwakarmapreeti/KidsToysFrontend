@@ -10,6 +10,8 @@ export interface WishlistProduct {
   stock:         number;
   slug:          string;
   brand:         string;
+  category?:     { name: string } | string;
+  description?:  string;
 }
 
 const wishlistService = {
