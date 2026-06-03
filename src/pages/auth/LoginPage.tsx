@@ -84,7 +84,7 @@ export default function LoginPage() {
           </p>
 
           <div className="mt-8 flex flex-col gap-3">
-            {['Safe & Certified Toys', 'Free Shipping on $50+', 'Easy 30-Day Returns'].map((text) => (
+            {['Safe & Certified Toys', 'Free Shipping on ₹500+', 'Easy 7-Day Returns'].map((text) => (
               <div key={text} className="flex items-center gap-2.5 bg-white/60 rounded-xl px-4 py-2.5">
                 <div className="w-5 h-5 rounded-full bg-accent-500 flex items-center justify-center flex-shrink-0">
                   <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>

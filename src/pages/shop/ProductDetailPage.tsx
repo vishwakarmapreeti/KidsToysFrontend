@@ -335,19 +335,19 @@ const handleWishlist = async () => {
 
             {/* Trust Badges */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {[
-                { icon: Truck, label: 'Free Shipping', desc: 'On orders $50+' },
-                { icon: RotateCcw, label: '30-Day Returns', desc: 'Easy returns' },
-                { icon: Shield, label: '100% Safe', desc: 'Certified toys' },
-              ].map(({ icon: Icon, label, desc }) => (
-                <div key={label} className="flex items-center gap-3 p-3 bg-neutral-50 rounded-xl">
-                  <Icon className="w-5 h-5 text-primary-500 flex-shrink-0" />
-                  <div>
-                    <p className="text-xs font-semibold text-neutral-900 leading-tight">{label}</p>
-                    <p className="text-2xs text-neutral-500">{desc}</p>
-                  </div>
-                </div>
-              ))}
+         {[
+  { icon: Truck,    label: 'Free Shipping', desc: 'On orders ₹500+' },
+  { icon: RotateCcw, label: '7-Day Returns', desc: 'Hassle-free returns' },
+  { icon: Shield,   label: '100% Safe',    desc: 'Certified toys' },
+].map(({ icon: Icon, label, desc }) => (
+  <div key={label} className="flex items-center gap-3 p-3 bg-neutral-50 rounded-xl">
+    <Icon className="w-5 h-5 text-primary-500 flex-shrink-0" />
+    <div>
+      <p className="text-xs font-semibold text-neutral-900 leading-tight">{label}</p>
+      <p className="text-2xs text-neutral-500">{desc}</p>
+    </div>
+  </div>
+))}
             </div>
 
             {/* Share */}

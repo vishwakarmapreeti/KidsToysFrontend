@@ -10,7 +10,7 @@ const containerVariants = {
   },
 };
 
-const itemVariants:Variants = {
+const itemVariants: Variants = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: 'easeOut' } },
 };
@@ -23,18 +23,19 @@ const stats = [
 
 const badges = [
   { icon: Shield, label: 'Safety Certified' },
-  { icon: Truck, label: 'Free Shipping $50+' },
+  { icon: Truck,  label: 'Free Shipping ₹500+' },
   { icon: Sparkles, label: 'New Arrivals Weekly' },
 ];
 
 export default function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-hero-gradient pt-8 pb-16 sm:pt-12 sm:pb-20 lg:pt-16 lg:pb-28">
+    <section className="relative overflow-hidden bg-gradient-to-br from-[#FFF5F5] via-[#FFF8F0] to-[#F0F7FF] pt-8 pb-16 sm:pt-12 sm:pb-20 lg:pt-16 lg:pb-28">
+
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-primary-100/60 blur-3xl" />
-        <div className="absolute top-1/2 -left-16 w-64 h-64 rounded-full bg-secondary-100/50 blur-3xl" />
-        <div className="absolute -bottom-10 right-1/3 w-48 h-48 rounded-full bg-accent-100/50 blur-3xl" />
+        <div className="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-[#FFE4E4]/60 blur-3xl" />
+        <div className="absolute top-1/2 -left-16 w-72 h-72 rounded-full bg-[#FFE8CC]/50 blur-3xl" />
+        <div className="absolute -bottom-10 right-1/3 w-56 h-56 rounded-full bg-[#E0EEFF]/60 blur-3xl" />
 
         {/* Floating dots */}
         {[
@@ -54,7 +55,8 @@ export default function HeroSection() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Text Content */}
+
+          {/* ── Text Content ─────────────────────── */}
           <motion.div
             variants={containerVariants}
             initial="hidden"
@@ -62,24 +64,38 @@ export default function HeroSection() {
             className="text-center lg:text-left"
           >
             {/* Badge */}
-            <motion.div variants={itemVariants} className="inline-flex items-center gap-2 bg-white/80 border border-primary-100 rounded-full px-4 py-2 mb-6 shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-accent-500 animate-pulse" />
+            <motion.div
+              variants={itemVariants}
+              className="inline-flex items-center gap-2 bg-white border border-primary-100 rounded-full px-4 py-2 mb-6 shadow-sm"
+            >
+              <span className="w-2 h-2 rounded-full bg-[#FF6B6B] animate-pulse" />
               <span className="text-xs font-semibold text-neutral-700">New Summer Collection is Here!</span>
               <Sparkles className="w-3.5 h-3.5 text-secondary-500" />
             </motion.div>
 
+            {/* ✅ Heading — dark color, clearly visible */}
             <motion.h1
               variants={itemVariants}
-              className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-neutral-900 leading-tight mb-5"
+              className="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl leading-tight mb-5"
             >
-              Spark{' '}
-              <span className="text-gradient-primary">Joy</span>{' '}
-              &amp; Imagination
+              <span className="text-neutral-900">Spark </span>
+              <span className="bg-gradient-to-r from-[#FF6B6B] to-[#FF8E53] bg-clip-text text-transparent">
+                Joy
+              </span>
+              <span className="text-neutral-900"> &amp; </span>
               <br className="hidden sm:block" />
-              in Every{' '}
-              <span className="relative inline-block">
+              <span className="text-neutral-900">Imagination</span>
+              <br />
+              <span className="text-neutral-900">in Every </span>
+              <span className="relative inline-block text-neutral-900">
                 Child
-                <svg className="absolute -bottom-1 left-0 w-full" viewBox="0 0 120 8" fill="none" preserveAspectRatio="none" style={{ height: '6px' }}>
+                <svg
+                  className="absolute -bottom-1 left-0 w-full"
+                  viewBox="0 0 120 8"
+                  fill="none"
+                  preserveAspectRatio="none"
+                  style={{ height: '6px' }}
+                >
                   <path d="M2 6C30 2 90 2 118 6" stroke="#FF9500" strokeWidth="3" strokeLinecap="round" />
                 </svg>
               </span>
@@ -89,11 +105,15 @@ export default function HeroSection() {
               variants={itemVariants}
               className="text-neutral-600 text-lg leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0"
             >
-              Discover thousands of premium, age-appropriate, and safety-certified toys that turn everyday play into extraordinary adventures.
+              Discover thousands of premium, age-appropriate, and safety-certified toys
+              that turn everyday play into extraordinary adventures.
             </motion.p>
 
             {/* CTA Buttons */}
-            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start mb-10">
+            <motion.div
+              variants={itemVariants}
+              className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start mb-10"
+            >
               <Link to="/shop" className="btn-primary text-base px-8 py-4">
                 <ShoppingBag className="w-5 h-5" />
                 Shop Now
@@ -105,7 +125,10 @@ export default function HeroSection() {
             </motion.div>
 
             {/* Stats */}
-            <motion.div variants={itemVariants} className="flex items-center gap-6 justify-center lg:justify-start">
+            <motion.div
+              variants={itemVariants}
+              className="flex items-center gap-8 justify-center lg:justify-start"
+            >
               {stats.map(({ value, label, icon }) => (
                 <div key={label} className="text-center lg:text-left">
                   <p className="font-display font-bold text-2xl text-neutral-900 leading-none">
@@ -117,7 +140,7 @@ export default function HeroSection() {
             </motion.div>
           </motion.div>
 
-          {/* Hero Image */}
+          {/* ── Hero Image ───────────────────────── */}
           <motion.div
             initial={{ opacity: 0, x: 40, scale: 0.97 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
@@ -125,61 +148,62 @@ export default function HeroSection() {
             className="relative"
           >
             <div className="relative">
-              {/* Main image */}
-              <div className="relative rounded-[2.5rem] overflow-hidden shadow-card-hover">
+              {/* ✅ Bright kids toys image */}
+              <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl">
                 <img
-                  src="https://images.pexels.com/photos/3661252/pexels-photo-3661252.jpeg?auto=compress&cs=tinysrgb&w=800"
+                  src="https://images.pexels.com/photos/3662667/pexels-photo-3662667.jpeg?auto=compress&cs=tinysrgb&w=800"
                   alt="Kids playing with colorful toys"
                   className="w-full h-[420px] sm:h-[480px] object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-neutral-900/20 to-transparent" />
+                {/* Light overlay — not dark */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
               </div>
 
-              {/* Floating Card 1 - Discount */}
+              {/* Floating Card 1 — Discount */}
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.8, duration: 0.4 }}
-                className="absolute -left-5 top-1/4 bg-white rounded-2xl shadow-card-hover p-3.5 flex items-center gap-3 max-w-44"
+                className="absolute -left-5 top-1/4 bg-white rounded-2xl shadow-xl p-3.5 flex items-center gap-3 max-w-44"
               >
-                <div className="w-11 h-11 rounded-xl bg-primary-50 flex items-center justify-center flex-shrink-0">
+                <div className="w-11 h-11 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
                   <span className="text-xl">🎁</span>
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-neutral-900">Up to 40% Off</p>
-                  <p className="text-2xs text-neutral-500">On featured toys</p>
+                  <p className="text-xs font-bold text-neutral-900">Up to 40% Off</p>
+                  <p className="text-[10px] text-neutral-500">On featured toys</p>
                 </div>
               </motion.div>
 
-              {/* Floating Card 2 - Safety */}
+              {/* Floating Card 2 — Safety */}
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 1, duration: 0.4 }}
-                className="absolute -right-5 bottom-1/4 bg-white rounded-2xl shadow-card-hover p-3.5 flex items-center gap-3 max-w-44"
+                className="absolute -right-5 bottom-1/4 bg-white rounded-2xl shadow-xl p-3.5 flex items-center gap-3 max-w-44"
               >
-                <div className="w-11 h-11 rounded-xl bg-accent-50 flex items-center justify-center flex-shrink-0">
-                  <Shield className="w-5 h-5 text-accent-500" />
+                <div className="w-11 h-11 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0">
+                  <Shield className="w-5 h-5 text-green-500" />
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-neutral-900">100% Safe</p>
-                  <p className="text-2xs text-neutral-500">CE & ASTM certified</p>
+                  <p className="text-xs font-bold text-neutral-900">100% Safe</p>
+                  <p className="text-[10px] text-neutral-500">CE & ASTM certified</p>
                 </div>
               </motion.div>
 
-              {/* Floating Card 3 - Rating */}
+              {/* Floating Card 3 — Rating */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.1, duration: 0.4 }}
-                className="absolute top-5 right-5 bg-white rounded-2xl shadow-card p-3 flex items-center gap-2"
+                className="absolute top-5 right-5 bg-white rounded-2xl shadow-lg p-3 flex items-center gap-2"
               >
                 <div className="flex">
-                  {[1,2,3,4,5].map((s) => (
-                    <Star key={s} className="w-3.5 h-3.5 text-secondary-400 fill-secondary-400" />
+                  {[1,2,3,4,5].map(s => (
+                    <Star key={s} className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
                   ))}
                 </div>
-                <span className="text-xs font-semibold text-neutral-800">4.9/5</span>
+                <span className="text-xs font-bold text-neutral-800">4.9/5</span>
               </motion.div>
             </div>
           </motion.div>
@@ -193,9 +217,12 @@ export default function HeroSection() {
           className="mt-14 grid grid-cols-1 sm:grid-cols-3 gap-4"
         >
           {badges.map(({ icon: Icon, label }) => (
-            <div key={label} className="flex items-center gap-3 justify-center bg-white/70 border border-white rounded-2xl px-5 py-3.5 shadow-sm">
-              <Icon className="w-5 h-5 text-primary-500 flex-shrink-0" />
-              <span className="text-sm font-medium text-neutral-700">{label}</span>
+            <div
+              key={label}
+              className="flex items-center gap-3 justify-center bg-white border border-neutral-100 rounded-2xl px-5 py-4 shadow-sm hover:shadow-md transition-shadow"
+            >
+              <Icon className="w-5 h-5 text-[#FF6B6B] flex-shrink-0" />
+              <span className="text-sm font-semibold text-neutral-700">{label}</span>
             </div>
           ))}
         </motion.div>
