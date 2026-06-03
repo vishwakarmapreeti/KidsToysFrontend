@@ -2,7 +2,7 @@ import {
   createContext, useContext, useState,
   useEffect, useCallback, type ReactNode,
 } from 'react';
-import cartService, { type Cart, type CartItem } from '../services/cartService';
+import cartService, { type Cart } from '../services/cartService';
 import { useAuth } from './AuthContext';
 
 interface CartContextType {

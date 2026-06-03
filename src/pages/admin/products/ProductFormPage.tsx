@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Upload, X, Save, Plus } from 'lucide-react';
+import { ArrowLeft,  X, Save, Plus } from 'lucide-react';
 import productService from '../../../services/productService';
 import categoryService from '../../../services/categoryService';
 import type { Category } from '../../../services/categoryService';

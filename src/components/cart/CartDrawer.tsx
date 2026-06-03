@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useCart } from '../../context/CartContext';
 
 export default function CartDrawer() {
-  const { cart, cartCount, isCartOpen, closeCart, updateItem, removeItem, clearCart } = useCart();
+  const { cart, cartCount, isCartOpen, closeCart, updateItem, removeItem,  } = useCart();
   const navigate  = useNavigate();
   const [updating, setUpdating] = useState<string | null>(null);
 

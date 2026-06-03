@@ -26,7 +26,7 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 function ProductCard({ product }: { product: Product }) {
-  const { addToCart, isLoading } = useCart();
+  const { addToCart} = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
