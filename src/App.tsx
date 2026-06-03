@@ -1,7 +1,9 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import { CartProvider } from './context/CartContext';      // ✅ add
-import { WishlistProvider } from './context/WishlistContext';  // ✅ add
+import { useAppDispatch, useAppSelector } from './store/hooks';
+import { selectIsAuthenticated } from './store/slices/authSlice';
+import { fetchCart, resetCart } from './store/slices/cartSlice';
+import { fetchWishlist, resetWishlist } from './store/slices/wishlistSlice';
 
 import HomePage from './pages/home/HomePage';
 import LoginPage from './pages/auth/LoginPage';
@@ -16,6 +18,7 @@ import WishlistPage from './pages/shop/WishlistPage';
 import CartPage from './pages/shop/CartPage';
 
 import AdminLayout from './components/layout/AdminLayout';
+import AdminLoginPage from './pages/admin/AdminLoginPage';
 import DashboardPage from './pages/admin/DashboardPage';
 import CategoriesListPage from './pages/admin/categories/CategoriesListPage';
 import CategoryFormPage from './pages/admin/categories/CategoryFormPage';
@@ -27,16 +30,33 @@ import MyOrdersPage from './pages/user/MyOrdersPage';
 import OrderDetailPage from './pages/user/OrderDetailPage';
 import AdminOrdersPage from './pages/admin/orders/AdminOrdersPage';
 
+function SessionDataLoader() {
+  const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(fetchCart());
+      dispatch(fetchWishlist());
+      return;
+    }
+
+    dispatch(resetCart());
+    dispatch(resetWishlist());
+  }, [dispatch, isAuthenticated]);
+
+  return null;
+}
+
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <CartProvider>
-          <WishlistProvider>
+      <SessionDataLoader />
             <Routes>
               {/* ── Public routes ──────────────────── */}
               <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/admin-login" element={<AdminLoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
@@ -67,9 +87,6 @@ function App() {
               {/* ── Catch all ──────────────────────── */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
-          </WishlistProvider>
-        </CartProvider>
-      </AuthProvider>
     </BrowserRouter>
   );
 }
