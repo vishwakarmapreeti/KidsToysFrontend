@@ -8,7 +8,8 @@ import authService from '../../services/authService';
 type Status = 'loading' | 'success' | 'error';
 
 export default function VerifyEmailPage() {
-  const { token } = useParams<{ token: string }>();
+  const params = useParams();
+  const token = params['*'];
   const [status, setStatus] = useState<Status>('loading');
   const [message, setMessage] = useState('');
 
