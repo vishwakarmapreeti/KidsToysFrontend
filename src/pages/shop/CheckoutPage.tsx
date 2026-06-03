@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  MapPin, CreditCard, Truck, ChevronRight,
+  MapPin, CreditCard,ChevronRight,
   ShoppingBag, ArrowLeft, Check, Phone
 } from 'lucide-react';
 import Layout from '../../components/layout/Layout';
@@ -35,7 +35,7 @@ export default function CheckoutPage() {
     phone:   user?.phone || '',
   });
 
-  const [paymentMethod, setPaymentMethod] = useState<'razorpay' | 'cod'>('razorpay');
+  const [paymentMethod] = useState<'razorpay'>('razorpay');
 
   const shippingPrice = cart && cart.totalPrice > 500 ? 0 : 50;
   const total         = cart ? cart.totalPrice + shippingPrice : 0;
@@ -70,12 +70,7 @@ export default function CheckoutPage() {
       });
       const order = orderRes.data.order;
 
-      if (paymentMethod === 'cod') {
-        // COD — seedha success
-        await clearCart();
-        navigate(`/order-success/${order._id}`);
-        return;
-      }
+     
 
       // Razorpay
       const rzpRes = await orderService.createRazorpayOrder(order._id);
@@ -296,8 +291,7 @@ export default function CheckoutPage() {
                       type="radio"
                       name="payment"
                       value="razorpay"
-                      checked={paymentMethod === 'razorpay'}
-                      onChange={() => setPaymentMethod('razorpay')}
+                   
                       className="accent-[#FF6B6B]"
                     />
                     <div className="flex items-center gap-3 flex-1">
@@ -314,30 +308,7 @@ export default function CheckoutPage() {
                     </span>
                   </label>
 
-                  {/* COD */}
-                  <label className={`flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                    paymentMethod === 'cod'
-                      ? 'border-[#FF6B6B] bg-red-50/50'
-                      : 'border-neutral-200 hover:border-neutral-300'
-                  }`}>
-                    <input
-                      type="radio"
-                      name="payment"
-                      value="cod"
-                      checked={paymentMethod === 'cod'}
-                      onChange={() => setPaymentMethod('cod')}
-                      className="accent-[#FF6B6B]"
-                    />
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center">
-                        <Truck className="w-5 h-5 text-white" />
-                      </div>
-                      <div>
-                        <p className="font-semibold text-neutral-900 text-sm">Cash on Delivery</p>
-                        <p className="text-xs text-neutral-500">Pay when you receive</p>
-                      </div>
-                    </div>
-                  </label>
+            
                 </div>
 
                 <button
@@ -388,7 +359,7 @@ export default function CheckoutPage() {
                       Edit
                     </button>
                   </div>
-                  <p className="text-sm text-neutral-600 capitalize">{paymentMethod === 'cod' ? 'Cash on Delivery' : 'Razorpay'}</p>
+                  <p className="text-sm text-neutral-600 capitalize">Razorpay</p>
                 </div>
 
                 {/* Items */}
@@ -428,7 +399,7 @@ export default function CheckoutPage() {
                   className="w-full flex items-center justify-center gap-2 bg-[#FF6B6B] text-white py-4 rounded-xl font-bold text-base hover:bg-[#ff5252] transition-colors disabled:opacity-60 shadow-lg"
                 >
                   <ShoppingBag className="w-5 h-5" />
-                  {isLoading ? 'Placing Order...' : paymentMethod === 'cod' ? 'Place Order (COD)' : 'Pay Now'}
+                  {isLoading ? 'Placing Order...'  : 'Pay Now'}
                 </button>
               </motion.div>
             )}
