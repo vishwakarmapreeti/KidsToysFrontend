@@ -145,7 +145,9 @@ export default function RegisterPage() {
           </Link>
 
           <div className="mb-8">
-            <h1 className="font-display font-bold text-3xl text-neutral-900 mb-2">Create Account</h1>
+<h1 className="font-display font-extrabold text-4xl text-[#ff5a5f] mb-2">
+  Create Account
+</h1>
             <p className="text-neutral-500">Already have an account?{' '}
               <Link to="/login" className="text-primary-600 font-medium hover:text-primary-700 transition-colors">
                 Sign in
@@ -216,7 +218,7 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="btn-primary w-full py-3.5 text-base mt-2"
+              className="btn-primary w-full py-3.5 text-base mt-2 mb-4"
             >
               {isLoading ? (
                 <>

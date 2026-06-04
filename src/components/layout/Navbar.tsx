@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect,useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, Heart, Search, Menu, X, User, LogOut, ChevronDown, Star, Package } from 'lucide-react';
@@ -25,6 +25,8 @@ export default function Navbar() {
   const navigate = useNavigate();
   const { cartCount, openCart }      = useCart();
 const { wishlistCount }            = useWishlist();
+const userMenuRef = useRef<HTMLDivElement>(null);
+const userButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -50,6 +52,25 @@ const { wishlistCount }            = useWishlist();
       setSearchQuery('');
     }
   };
+
+  useEffect(() => {
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      userMenuRef.current &&
+      !userMenuRef.current.contains(event.target as Node) &&
+      userButtonRef.current &&
+      !userButtonRef.current.contains(event.target as Node)
+    ) {
+      setUserMenuOpen(false);
+    }
+  };
+
+  document.addEventListener('mousedown', handleClickOutside);
+
+  return () => {
+    document.removeEventListener('mousedown', handleClickOutside);
+  };
+}, []);
 
   return (
     <>
@@ -126,10 +147,11 @@ const { wishlistCount }            = useWishlist();
               {/* User Menu */}
               {isAuthenticated ? (
                 <div className="relative hidden sm:block">
-                  <button
-                    onClick={() => setUserMenuOpen(!userMenuOpen)}
-                    className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-xl hover:bg-neutral-100 transition-colors duration-200"
-                  >
+                 <button
+  ref={userButtonRef}
+  onClick={() => setUserMenuOpen(!userMenuOpen)}
+  className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-xl hover:bg-neutral-100 transition-colors duration-200"
+>
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-secondary-400 flex items-center justify-center text-white font-semibold text-sm">
                       {user?.name?.charAt(0).toUpperCase()}
                     </div>
@@ -142,6 +164,7 @@ const { wishlistCount }            = useWishlist();
                   <AnimatePresence>
                     {userMenuOpen && (
                       <motion.div
+                        ref={userMenuRef}
                         initial={{ opacity: 0, y: 8, scale: 0.96 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 8, scale: 0.96 }}

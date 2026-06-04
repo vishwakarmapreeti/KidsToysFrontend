@@ -117,7 +117,7 @@ export default function LoginPage() {
           </Link>
 
           <div className="mb-8">
-            <h1 className="font-display font-bold text-3xl text-neutral-900 mb-2">Sign In</h1>
+            <h1 className="font-display font-bold text-3xl text-[#ff5a5f] mb-4">Sign In</h1>
             <p className="text-neutral-500">New here?{' '}
               <Link to="/register" className="text-primary-600 font-medium hover:text-primary-700 transition-colors">
                 Create an account
@@ -157,7 +157,12 @@ export default function LoginPage() {
 
             <div className="flex items-center justify-between">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" className="w-4 h-4 rounded border-neutral-300 text-primary-500 focus:ring-primary-400 accent-primary-500" />
+             <input
+  type="checkbox"
+  className="w-4 h-4 rounded border border-neutral-300 bg-white 
+             accent-primary-500 appearance-auto 
+             focus:ring-2 focus:ring-primary-400"
+/>
                 <span className="text-sm text-neutral-600">Remember me</span>
               </label>
               <Link to="/forgot-password" className="text-sm text-primary-600 font-medium hover:text-primary-700 transition-colors">

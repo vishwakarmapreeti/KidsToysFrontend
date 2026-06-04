@@ -37,7 +37,7 @@ export default function CheckoutPage() {
 
   const [paymentMethod] = useState<'razorpay'>('razorpay');
 
-  const shippingPrice = cart && cart.totalPrice > 500 ? 0 : 50;
+  const shippingPrice = cart && cart.totalPrice > 500 ? 0 : 0;
   const total         = cart ? cart.totalPrice + shippingPrice : 0;
 
   useEffect(() => {
