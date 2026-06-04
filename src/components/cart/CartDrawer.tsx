@@ -179,12 +179,12 @@ export default function CartDrawer() {
                   <div className="flex justify-between text-sm text-neutral-600">
                     <span>Shipping</span>
                     <span className="text-green-600 font-medium">
-                      {cart.totalPrice > 500 ? 'Free' : '₹50'}
+                      {cart.totalPrice > 500 ? 'Free' : '₹0'}
                     </span>
                   </div>
                   <div className="flex justify-between font-bold text-neutral-900 text-base pt-2 border-t border-neutral-100">
                     <span>Total</span>
-                    <span>₹{(cart.totalPrice + (cart.totalPrice > 500 ? 0 : 50)).toLocaleString('en-IN')}</span>
+                    <span>₹{(cart.totalPrice + (cart.totalPrice > 500 ? 0 : 0)).toLocaleString('en-IN')}</span>
                   </div>
                 </div>
 

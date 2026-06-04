@@ -26,6 +26,7 @@ import OrderSuccessPage from './pages/shop/OrderSuccessPage';
 import MyOrdersPage from './pages/user/MyOrdersPage';
 import OrderDetailPage from './pages/user/OrderDetailPage';
 import AdminOrdersPage from './pages/admin/orders/AdminOrdersPage';
+import AdminUserDetailPage from './pages/admin/users/AdminUserDetailPage';
 
 function App() {
   return (
@@ -62,6 +63,7 @@ function App() {
                 <Route path="products/add" element={<ProductFormPage />} />
                 <Route path="products/edit/:id" element={<ProductFormPage />} />
                 <Route path="orders" element={<AdminOrdersPage />} />
+                <Route path="/admin/users/:id" element={<AdminUserDetailPage />} />
               </Route>
 
               {/* ── Catch all ──────────────────────── */}
