@@ -27,6 +27,9 @@ import MyOrdersPage from './pages/user/MyOrdersPage';
 import OrderDetailPage from './pages/user/OrderDetailPage';
 import AdminOrdersPage from './pages/admin/orders/AdminOrdersPage';
 import AdminUserDetailPage from './pages/admin/users/AdminUserDetailPage';
+import AdminUsersPage from './pages/admin/users/AdminUsersPage';
+import AdminOrderDetailPage from './pages/admin/orders/AdminOrderDetailPage';
+import ProfilePage from './pages/admin/users/ProfilePage';
 
 function App() {
   return (
@@ -51,20 +54,28 @@ function App() {
               <Route path="/order-success/:id" element={<OrderSuccessPage />} />
               <Route path="/orders" element={<MyOrdersPage />} />
               <Route path="/orders/:id" element={<OrderDetailPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
 
               {/* ── Admin routes ───────────────────── */}
-              <Route path="/admin" element={<AdminLayout />}>
-                <Route index element={<Navigate to="/admin/dashboard" replace />} />
-                <Route path="dashboard" element={<DashboardPage />} />
-                <Route path="categories" element={<CategoriesListPage />} />
-                <Route path="categories/add" element={<CategoryFormPage />} />
-                <Route path="categories/edit/:id" element={<CategoryFormPage />} />
-                <Route path="products" element={<ProductsListPage />} />
-                <Route path="products/add" element={<ProductFormPage />} />
-                <Route path="products/edit/:id" element={<ProductFormPage />} />
-                <Route path="orders" element={<AdminOrdersPage />} />
-                <Route path="/admin/users/:id" element={<AdminUserDetailPage />} />
-              </Route>
+             <Route path="/admin" element={<AdminLayout />}>
+  <Route index element={<Navigate to="/admin/dashboard" replace />} />
+
+  <Route path="dashboard" element={<DashboardPage />} />
+
+  <Route path="categories" element={<CategoriesListPage />} />
+  <Route path="categories/add" element={<CategoryFormPage />} />
+  <Route path="categories/edit/:id" element={<CategoryFormPage />} />
+
+  <Route path="products" element={<ProductsListPage />} />
+  <Route path="products/add" element={<ProductFormPage />} />
+  <Route path="products/edit/:id" element={<ProductFormPage />} />
+
+  <Route path="orders" element={<AdminOrdersPage />} />
+  <Route path="orders/:id" element={<AdminOrderDetailPage />} />
+
+  <Route path="users" element={<AdminUsersPage />} />
+  <Route path="users/:id" element={<AdminUserDetailPage />} />
+</Route>
 
               {/* ── Catch all ──────────────────────── */}
               <Route path="*" element={<Navigate to="/" replace />} />

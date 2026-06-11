@@ -181,6 +181,9 @@ export default function CheckoutPage() {
                     <label className="block text-sm font-medium text-neutral-700 mb-1.5">
                       Phone Number <span className="text-red-500">*</span>
                     </label>
+
+
+                    
                     <div className="relative">
                       <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
                       <input

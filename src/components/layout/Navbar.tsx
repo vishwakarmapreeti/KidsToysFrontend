@@ -1,4 +1,4 @@
-import { useState, useEffect,useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, Heart, Search, Menu, X, User, LogOut, ChevronDown, Star, Package } from 'lucide-react';
@@ -23,10 +23,10 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
-  const { cartCount, openCart }      = useCart();
-const { wishlistCount }            = useWishlist();
-const userMenuRef = useRef<HTMLDivElement>(null);
-const userButtonRef = useRef<HTMLButtonElement>(null);
+  const { cartCount, openCart } = useCart();
+  const { wishlistCount } = useWishlist();
+  const userMenuRef = useRef<HTMLDivElement>(null);
+  const userButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -54,23 +54,23 @@ const userButtonRef = useRef<HTMLButtonElement>(null);
   };
 
   useEffect(() => {
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      userMenuRef.current &&
-      !userMenuRef.current.contains(event.target as Node) &&
-      userButtonRef.current &&
-      !userButtonRef.current.contains(event.target as Node)
-    ) {
-      setUserMenuOpen(false);
-    }
-  };
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(event.target as Node) &&
+        userButtonRef.current &&
+        !userButtonRef.current.contains(event.target as Node)
+      ) {
+        setUserMenuOpen(false);
+      }
+    };
 
-  document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
 
-  return () => {
-    document.removeEventListener('mousedown', handleClickOutside);
-  };
-}, []);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <>
@@ -78,11 +78,10 @@ const userButtonRef = useRef<HTMLButtonElement>(null);
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
             ? 'bg-white/95 backdrop-blur-md shadow-md'
             : 'bg-white/80 backdrop-blur-sm'
-        }`}
+          }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-18">
@@ -102,11 +101,10 @@ const userButtonRef = useRef<HTMLButtonElement>(null);
                 <Link
                   key={link.href}
                   to={link.href}
-                  className={`px-4 py-2 rounded-xl font-medium text-sm transition-all duration-200 ${
-                    location.pathname === link.href
+                  className={`px-4 py-2 rounded-xl font-medium text-sm transition-all duration-200 ${location.pathname === link.href
                       ? 'text-primary-600 bg-primary-50'
                       : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100'
-                  }`}
+                    }`}
                 >
                   {link.label}
                 </Link>
@@ -125,33 +123,33 @@ const userButtonRef = useRef<HTMLButtonElement>(null);
               </button>
 
               {/* Wishlist */}
-             <Link to="/wishlist" className="relative p-2">
-  <Heart className="w-5 h-5" />
-  {wishlistCount > 0 && (
-    <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
-      {wishlistCount}
-    </span>
-  )}
-</Link>
+              <Link to="/wishlist" className="relative p-2">
+                <Heart className="w-5 h-5" />
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                    {wishlistCount}
+                  </span>
+                )}
+              </Link>
 
               {/* Cart */}
-            <button onClick={openCart} className="relative p-2">
-  <ShoppingCart className="w-5 h-5" />
-  {cartCount > 0 && (
-    <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
-      {cartCount}
-    </span>
-  )}
-</button>
+              <button onClick={openCart} className="relative p-2">
+                <ShoppingCart className="w-5 h-5" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
 
               {/* User Menu */}
               {isAuthenticated ? (
                 <div className="relative hidden sm:block">
-                 <button
-  ref={userButtonRef}
-  onClick={() => setUserMenuOpen(!userMenuOpen)}
-  className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-xl hover:bg-neutral-100 transition-colors duration-200"
->
+                  <button
+                    ref={userButtonRef}
+                    onClick={() => setUserMenuOpen(!userMenuOpen)}
+                    className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-xl hover:bg-neutral-100 transition-colors duration-200"
+                  >
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-secondary-400 flex items-center justify-center text-white font-semibold text-sm">
                       {user?.name?.charAt(0).toUpperCase()}
                     </div>
@@ -184,6 +182,17 @@ const userButtonRef = useRef<HTMLButtonElement>(null);
                             <Package className="w-4 h-4 text-neutral-400" />
                             My Orders
                           </Link>
+
+                            {user?.role === 'admin' && (
+    <Link
+      to="/admin/dashboard"
+      className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm text-neutral-700 hover:bg-neutral-50 transition-colors"
+    >
+      <User className="w-4 h-4 text-neutral-400" />
+      Admin Dashboard
+    </Link>
+  )}
+
                           <button
                             onClick={handleLogout}
                             className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm text-error-500 hover:bg-red-50 transition-colors"
@@ -234,11 +243,10 @@ const userButtonRef = useRef<HTMLButtonElement>(null);
                   <Link
                     key={link.href}
                     to={link.href}
-                    className={`flex items-center px-4 py-3 rounded-xl font-medium text-sm transition-colors ${
-                      location.pathname === link.href
+                    className={`flex items-center px-4 py-3 rounded-xl font-medium text-sm transition-colors ${location.pathname === link.href
                         ? 'text-primary-600 bg-primary-50'
                         : 'text-neutral-700 hover:bg-neutral-50'
-                    }`}
+                      }`}
                   >
                     {link.label}
                   </Link>
