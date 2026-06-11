@@ -97,6 +97,13 @@ const UserRoutes: {
     path: "/verify-email/*",
     element: lazy(() => import("../../pages/auth/VerifyEmailPage")),
   },
+{
+    key: "profile-page",
+    path: "/profile",
+    element: lazy(() => import("../../pages/admin/users/ProfilePage")),
+    isProtected: true,
+  },
+
 ];
 
 export default UserRoutes;
