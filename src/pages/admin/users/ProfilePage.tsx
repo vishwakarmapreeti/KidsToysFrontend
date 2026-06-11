@@ -10,10 +10,16 @@ import {
 // import { useAuth } from '../../context/AuthContext';
 // import userService from '../../services/userService';
 import Layout from '../../../components/layout/Layout';
-import { useAuth } from '../../../context/AuthContext';
+import userService from '../../../services/userService';
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { setCredentials } from '../../../store/slices/authSlice';
+// import { useAuth } from '../../../context/AuthContext';
 
 export default function ProfilePage() {
-  const { user, login, token } = useAuth();
+  // const { user, login, token } = useAuth();
+
+  const {user,  token} = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
 
   const [activeTab, setActiveTab] = useState<'profile' | 'address' | 'password'>('profile');
   const [isLoading, setIsLoading] = useState(false);
@@ -62,7 +68,7 @@ export default function ProfilePage() {
       });
       // Update auth context
       if (token) {
-        login(res.data.user as any, token);
+       dispatch(setCredentials({ user: res.data.user, token : token }));
       }
       showMessage('Profile updated successfully!');
     } catch (err: any) {
@@ -82,7 +88,7 @@ export default function ProfilePage() {
         phone:   profileForm.phone,
         address: addressForm,
       });
-      if (token) login(res.data.user as any, token);
+      if (token) dispatch(setCredentials({ user: res.data.user, token }));
       showMessage('Address updated successfully!');
     } catch (err: any) {
       showMessage(err.response?.data?.message || 'Failed to update', true);

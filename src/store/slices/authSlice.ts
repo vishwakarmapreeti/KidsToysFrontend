@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import authService, { type AuthUser } from '../../services/authService';
 import type { RootState } from '../index';
+import type { AdminUser } from '../../services/userService';
 
 interface AuthState {
-  user: AuthUser | null;
+  user: AuthUser | AdminUser | null;
   token: string | null;
   isLoading: boolean;
   isAuthenticated: boolean;
@@ -20,7 +21,7 @@ const readStoredAuth = (): Pick<AuthState, 'user' | 'token'> => {
   try {
     return {
       token: storedToken,
-      user: JSON.parse(storedUser) as AuthUser,
+      user: JSON.parse(storedUser) as AuthUser | AdminUser,
     };
   } catch {
     localStorage.removeItem('token');
@@ -54,7 +55,7 @@ const authSlice = createSlice({
   reducers: {
     setCredentials: (
       state,
-      action: PayloadAction<{ user: AuthUser; token: string }>
+      action: PayloadAction<{ user: AuthUser | AdminUser; token: string }>
     ) => {
       state.user = action.payload.user;
       state.token = action.payload.token;
