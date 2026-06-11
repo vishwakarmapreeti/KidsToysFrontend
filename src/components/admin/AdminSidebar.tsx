@@ -126,6 +126,7 @@ export default function AdminSidebar({ isOpen, mobileOpen, onMobileClose }: Prop
       <aside
         className={`hidden lg:flex flex-col fixed inset-y-0 left-0 z-40 transition-all duration-300 ${isOpen ? 'w-64' : 'w-20'}`}
       >
+       
         <SidebarContent />
       </aside>
 

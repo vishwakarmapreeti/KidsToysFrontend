@@ -113,8 +113,8 @@ export default function Footer() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {[
               { label: 'Safe & Secure', desc: 'SSL Encrypted' },
-              { label: 'Free Shipping', desc: 'Orders over $50' },
-              { label: 'Easy Returns', desc: '30-day policy' },
+              { label: 'Free Shipping', desc: 'Orders over ₹500' },
+              { label: 'Easy Returns', desc: '7-day policy' },
               { label: '24/7 Support', desc: 'Always here for you' },
             ].map(({ label, desc }) => (
               <div key={label} className="flex items-center gap-3 p-3 rounded-2xl bg-neutral-800/50">

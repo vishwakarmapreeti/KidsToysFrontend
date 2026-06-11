@@ -51,4 +51,14 @@ export const AdminRoutes: {
       () => import("../../pages/admin/categories/CategoryFormPage"),
     ),
   },
+  {
+    key: "orders",
+    path: "/admin/orders",
+    element: lazy(() => import("../../pages/admin/orders/AdminOrdersPage")),
+  },
+  {
+    key: "users",
+    path: "/admin/orders/:id",
+    element: lazy(() => import("../../pages/admin/orders/AdminOrderDetailPage")),
+  },
 ];
