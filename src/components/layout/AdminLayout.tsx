@@ -1,19 +1,16 @@
-import { useState } from 'react';
-import { Outlet, Navigate} from 'react-router-dom';
+import { type ReactNode, useState } from "react";
+import { Outlet } from "react-router-dom";
 
-// import AdminNavbar from '../components/admin/AdminNavbar';
-import AdminSidebar from '../admin/AdminSidebar';
-import AdminNavbar from '../admin/AdminNavbar';
+import AdminSidebar from "../admin/AdminSidebar";
+import AdminNavbar from "../admin/AdminNavbar";
 
-export default function AdminLayout() {
+type AdminLayoutProps = {
+  children?: ReactNode;
+};
+
+export default function AdminLayout({ children }: AdminLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [mobileOpen, setMobileOpen]   = useState(false);
-
-  // Check admin auth
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
-  if (!user || user.role !== 'admin') {
-    return <Navigate to="/login" replace />;
-  }
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#F8F7FF] flex">
@@ -25,14 +22,16 @@ export default function AdminLayout() {
       />
 
       {/* Main */}
-      <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ${sidebarOpen ? 'lg:ml-64' : 'lg:ml-20'}`}>
+      <div
+        className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ${sidebarOpen ? "lg:ml-64" : "lg:ml-20"}`}
+      >
         <AdminNavbar
           sidebarOpen={sidebarOpen}
           onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
           onMobileMenuClick={() => setMobileOpen(true)}
         />
         <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
-          <Outlet />
+          {children ?? <Outlet />}
         </main>
       </div>
 

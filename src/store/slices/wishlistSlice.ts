@@ -128,7 +128,7 @@ const wishlistSlice = createSlice({
 export const { resetWishlist } = wishlistSlice.actions;
 
 export const selectWishlistCount = (state: RootState) => state.wishlist.wishlist.length;
-export const selectIsInWishlist = (state: RootState, productId: string) =>
-  state.wishlist.wishlist.some((product) => product._id === productId);
+export const selectIsInWishlist = (state: RootState, productId: string | null) =>
+  productId && state.wishlist.wishlist.some((product) => product._id === productId);
 
 export default wishlistSlice.reducer;

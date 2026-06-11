@@ -96,7 +96,7 @@ const [error, setError] = useState('');
   );
 }
 
-  if (!order) return null;
+  if (!order) return <></>;
 
   const currentStep = STATUS_STEPS.indexOf(order.orderStatus);
   const StatusIcon  = STATUS_ICONS[order.orderStatus] || Clock;

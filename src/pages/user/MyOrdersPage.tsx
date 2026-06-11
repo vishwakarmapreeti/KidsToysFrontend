@@ -129,7 +129,7 @@ export default function MyOrdersPage() {
                                                 </div>
                                             </div>
 
-                                            <div className="text-right flex-shrink-0">
+                                            <div className="text-right shrink-0">
                                                 <p className="font-bold text-lg text-neutral-900">
                                                     ₹{order.totalPrice.toLocaleString('en-IN')}
                                                 </p>

@@ -1,15 +1,31 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Star, Heart, Share2, ShoppingCart, Truck, Shield, RotateCcw, ChevronLeft, ChevronRight, Minus, Plus, Check } from 'lucide-react';
-import Layout from '../../components/layout/Layout';
-import LoadingSpinner from '../../components/common/LoadingSpinner';
-import AlertMessage from '../../components/common/AlertMessage';
-import productService from '../../services/productService';
-import type { Product } from '../../services/productService';
-import { useAuth }      from '../../context/AuthContext';
-import { useCart }      from '../../context/CartContext';
-import { useWishlist }  from '../../context/WishlistContext';
+import { useState, useEffect } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import {
+  Star,
+  Heart,
+  Share2,
+  ShoppingCart,
+  Truck,
+  Shield,
+  RotateCcw,
+  ChevronLeft,
+  ChevronRight,
+  Minus,
+  Plus,
+  Check,
+} from "lucide-react";
+import Layout from "../../components/layout/Layout";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
+import AlertMessage from "../../components/common/AlertMessage";
+import productService from "../../services/productService";
+import type { Product } from "../../services/productService";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { addCartItem } from "../../store/slices/cartSlice";
+import {
+  selectIsInWishlist,
+  toggleWishlist,
+} from "../../store/slices/wishlistSlice";
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -17,7 +33,7 @@ function StarRating({ rating }: { rating: number }) {
       {[1, 2, 3, 4, 5].map((s) => (
         <Star
           key={s}
-          className={`w-4 h-4 ${s <= Math.floor(rating) ? 'text-secondary-400 fill-secondary-400' : 'text-neutral-200 fill-neutral-200'}`}
+          className={`w-4 h-4 ${s <= Math.floor(rating) ? "text-secondary-400 fill-secondary-400" : "text-neutral-200 fill-neutral-200"}`}
         />
       ))}
     </div>
@@ -29,18 +45,17 @@ export default function ProductDetailPage() {
   const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
-  const { isAuthenticated }              = useAuth();
-const { addToCart, isLoading: cartLoading } = useCart();
-const { isInWishlist, toggleWishlist } = useWishlist();
+  const dispatch = useAppDispatch();
 
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { isLoading: cartLoading } = useAppSelector((state) => state.cart);
 
-const [wishlistLoading, setWishlistLoading] = useState(false);
-const [cartError, setCartError]             = useState('');
-
+  const [wishlistLoading, setWishlistLoading] = useState(false);
+  const [cartError, setCartError] = useState("");
 
   useEffect(() => {
     loadProduct();
@@ -49,16 +64,21 @@ const [cartError, setCartError]             = useState('');
   const loadProduct = async () => {
     if (!id) return;
     setIsLoading(true);
-    setError('');
+    setError("");
     try {
       const res = await productService.getProduct(id);
       setProduct(res.data.product);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to load product');
+      setError(err.response?.data?.message || "Failed to load product");
     } finally {
       setIsLoading(false);
     }
   };
+
+  const isInWishlist = useAppSelector(
+    (state) => selectIsInWishlist(state, product?._id ?? ""), // ?. aur ?? use karo
+  );
+
 
   if (isLoading) {
     return (
@@ -74,8 +94,11 @@ const [cartError, setCartError]             = useState('');
     return (
       <Layout>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-          <AlertMessage type="error" message={error || 'Product not found'} />
-          <button onClick={() => navigate('/shop')} className="btn-primary mt-6">
+          <AlertMessage type="error" message={error || "Product not found"} />
+          <button
+            onClick={() => navigate("/shop")}
+            className="btn-primary mt-6"
+          >
             <ChevronLeft className="w-4 h-4" />
             Back to Shop
           </button>
@@ -84,38 +107,44 @@ const [cartError, setCartError]             = useState('');
     );
   }
 
-  const discount = product.discountPrice > 0
-    ? Math.round(((product.price - product.discountPrice) / product.price) * 100)
-    : 0;
-  const displayPrice = product.discountPrice > 0 ? product.discountPrice : product.price;
+  const discount =
+    product.discountPrice > 0
+      ? Math.round(
+          ((product.price - product.discountPrice) / product.price) * 100,
+        )
+      : 0;
+  const displayPrice =
+    product.discountPrice > 0 ? product.discountPrice : product.price;
 
   const handleAddToCart = async () => {
-  if (!isAuthenticated) {
-    navigate('/login');
-    return;
-  }
-  setCartError('');
-  try {
-    await addToCart(product!._id, quantity);
-    setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 2000);
-  } catch (err: any) {
-    setCartError(err.response?.data?.message || 'Failed to add to cart');
-  }
-};
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+    setCartError("");
+    try {
+      await dispatch(
+        addCartItem({ productId: product!._id, quantity }),
+      ).unwrap();
+      setAddedToCart(true);
+      setTimeout(() => setAddedToCart(false), 2000);
+    } catch (err: any) {
+      setCartError(err.response?.data?.message || "Failed to add to cart");
+    }
+  };
 
-const handleWishlist = async () => {
-  if (!isAuthenticated) {
-    navigate('/login');
-    return;
-  }
-  setWishlistLoading(true);
-  try {
-    await toggleWishlist(product!._id);
-  } finally {
-    setWishlistLoading(false);
-  }
-};
+  const handleWishlist = async () => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+    setWishlistLoading(true);
+    try {
+      await dispatch(toggleWishlist(product!._id)).unwrap();
+    } finally {
+      setWishlistLoading(false);
+    }
+  };
 
   const handleQuantityChange = (value: number) => {
     if (value >= 1 && value <= product.stock) {
@@ -133,9 +162,13 @@ const handleWishlist = async () => {
           transition={{ duration: 0.3 }}
           className="flex items-center gap-2 text-sm text-neutral-600 mb-8"
         >
-          <Link to="/" className="hover:text-primary-600 transition-colors">Home</Link>
+          <Link to="/" className="hover:text-primary-600 transition-colors">
+            Home
+          </Link>
           <span>/</span>
-          <Link to="/shop" className="hover:text-primary-600 transition-colors">Shop</Link>
+          <Link to="/shop" className="hover:text-primary-600 transition-colors">
+            Shop
+          </Link>
           <span>/</span>
           <span className="text-neutral-900 font-medium">{product.name}</span>
         </motion.div>
@@ -149,7 +182,10 @@ const handleWishlist = async () => {
           >
             <div className="bg-neutral-100 rounded-3xl overflow-hidden mb-4 aspect-square flex items-center justify-center">
               <img
-                src={product.images[selectedImage] || 'https://via.placeholder.com/500'}
+                src={
+                  product.images[selectedImage] ||
+                  "https://via.placeholder.com/500"
+                }
                 alt={product.name}
                 className="w-full h-full object-cover"
               />
@@ -161,13 +197,17 @@ const handleWishlist = async () => {
                   <button
                     key={idx}
                     onClick={() => setSelectedImage(idx)}
-                    className={`w-20 h-20 rounded-2xl overflow-hidden flex-shrink-0 border-2 transition-all ${
+                    className={`w-20 h-20 rounded-2xl overflow-hidden shrink-0 border-2 transition-all ${
                       selectedImage === idx
-                        ? 'border-primary-500 shadow-md'
-                        : 'border-neutral-200 hover:border-neutral-300'
+                        ? "border-primary-500 shadow-md"
+                        : "border-neutral-200 hover:border-neutral-300"
                     }`}
                   >
-                    <img src={img} alt="" className="w-full h-full object-cover" />
+                    <img
+                      src={img}
+                      alt=""
+                      className="w-full h-full object-cover"
+                    />
                   </button>
                 ))}
               </div>
@@ -192,30 +232,34 @@ const handleWishlist = async () => {
                     {product.name}
                   </h1>
                 </div>
-               <button
-  onClick={handleWishlist}
-  disabled={wishlistLoading}
-  className={`p-2.5 rounded-xl hover:bg-neutral-100 transition-colors ${
-    isInWishlist(product._id)
-      ? 'text-red-500'
-      : 'text-neutral-600 hover:text-red-500'
-  }`}
->
-  <Heart
-    className={`w-6 h-6 transition-all ${
-      isInWishlist(product._id) ? 'fill-red-500' : ''
-    }`}
-  />
-</button>
+                <button
+                  onClick={handleWishlist}
+                  disabled={wishlistLoading}
+                  className={`p-2.5 rounded-xl hover:bg-neutral-100 transition-colors ${
+                    isInWishlist
+                      ? "text-red-500"
+                      : "text-neutral-600 hover:text-red-500"
+                  }`}
+                >
+                  <Heart
+                    className={`w-6 h-6 transition-all ${
+                      isInWishlist ? "fill-red-500" : ""
+                    }`}
+                  />
+                </button>
               </div>
 
               {/* Rating */}
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center gap-1.5">
                   <StarRating rating={product.ratings} />
-                  <span className="font-semibold text-neutral-900">{product.ratings}</span>
+                  <span className="font-semibold text-neutral-900">
+                    {product.ratings}
+                  </span>
                 </div>
-                <span className="text-sm text-neutral-500">({product.numReviews} reviews)</span>
+                <span className="text-sm text-neutral-500">
+                  ({product.numReviews} reviews)
+                </span>
               </div>
             </div>
 
@@ -249,7 +293,9 @@ const handleWishlist = async () => {
 
             {/* Description */}
             <div className="mb-6 pb-6 border-b border-neutral-200">
-              <h3 className="font-semibold text-neutral-900 mb-2">About this product</h3>
+              <h3 className="font-semibold text-neutral-900 mb-2">
+                About this product
+              </h3>
               <p className="text-neutral-600 leading-relaxed line-clamp-3">
                 {product.description}
               </p>
@@ -258,16 +304,29 @@ const handleWishlist = async () => {
             {/* Key Info */}
             <div className="grid grid-cols-2 gap-3 mb-8">
               {[
-                { label: 'Age Group', value: product.ageGroup ? `${product.ageGroup} years` : 'All ages' },
-                { label: 'Category', value: typeof product.category === 'string' ? product.category : product.category.name },
-                { label: 'Brand', value: product.brand },
-                { label: 'Stock', value: `${product.stock} available` },
+                {
+                  label: "Age Group",
+                  value: product.ageGroup
+                    ? `${product.ageGroup} years`
+                    : "All ages",
+                },
+                {
+                  label: "Category",
+                  value:
+                    typeof product.category === "string"
+                      ? product.category
+                      : product.category.name,
+                },
+                { label: "Brand", value: product.brand },
+                { label: "Stock", value: `${product.stock} available` },
               ].map(({ label, value }) => (
                 <div key={label} className="p-3 bg-neutral-50 rounded-xl">
                   <p className="text-2xs font-semibold text-neutral-500 uppercase tracking-wide mb-0.5">
                     {label}
                   </p>
-                  <p className="text-sm font-medium text-neutral-900">{value}</p>
+                  <p className="text-sm font-medium text-neutral-900">
+                    {value}
+                  </p>
                 </div>
               ))}
             </div>
@@ -286,7 +345,9 @@ const handleWishlist = async () => {
                   <input
                     type="number"
                     value={quantity}
-                    onChange={(e) => handleQuantityChange(Number(e.target.value))}
+                    onChange={(e) =>
+                      handleQuantityChange(Number(e.target.value))
+                    }
                     className="w-12 text-center font-semibold text-neutral-900 bg-transparent focus:outline-none"
                     min="1"
                     max={product.stock}
@@ -301,25 +362,23 @@ const handleWishlist = async () => {
                 </div>
               </div>
 
-           <button
-  onClick={handleAddToCart}
-  disabled={product.stock === 0 || cartLoading}
-  className="btn-primary w-full py-3.5 text-base"
->
-  {cartLoading ? (
-    <>Loading...</>
-  ) : (
-    <>
-      <ShoppingCart className="w-5 h-5" />
-      Add to Cart
-      <ChevronRight className="w-4 h-4" />
-    </>
-  )}
-</button>
+              <button
+                onClick={handleAddToCart}
+                disabled={product.stock === 0 || cartLoading}
+                className="btn-primary w-full py-3.5 text-base"
+              >
+                {cartLoading ? (
+                  <>Loading...</>
+                ) : (
+                  <>
+                    <ShoppingCart className="w-5 h-5" />
+                    Add to Cart
+                    <ChevronRight className="w-4 h-4" />
+                  </>
+                )}
+              </button>
 
-{cartError && (
-  <p className="text-red-500 text-sm">{cartError}</p>
-)}
+              {cartError && <p className="text-red-500 text-sm">{cartError}</p>}
 
               {addedToCart && (
                 <motion.div
@@ -336,14 +395,23 @@ const handleWishlist = async () => {
             {/* Trust Badges */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {[
-                { icon: Truck, label: 'Free Shipping', desc: 'On orders $50+' },
-                { icon: RotateCcw, label: '30-Day Returns', desc: 'Easy returns' },
-                { icon: Shield, label: '100% Safe', desc: 'Certified toys' },
+                { icon: Truck, label: "Free Shipping", desc: "On orders $50+" },
+                {
+                  icon: RotateCcw,
+                  label: "30-Day Returns",
+                  desc: "Easy returns",
+                },
+                { icon: Shield, label: "100% Safe", desc: "Certified toys" },
               ].map(({ icon: Icon, label, desc }) => (
-                <div key={label} className="flex items-center gap-3 p-3 bg-neutral-50 rounded-xl">
+                <div
+                  key={label}
+                  className="flex items-center gap-3 p-3 bg-neutral-50 rounded-xl"
+                >
                   <Icon className="w-5 h-5 text-primary-500 flex-shrink-0" />
                   <div>
-                    <p className="text-xs font-semibold text-neutral-900 leading-tight">{label}</p>
+                    <p className="text-xs font-semibold text-neutral-900 leading-tight">
+                      {label}
+                    </p>
                     <p className="text-2xs text-neutral-500">{desc}</p>
                   </div>
                 </div>
@@ -370,7 +438,10 @@ const handleWishlist = async () => {
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="card p-4 h-56 bg-neutral-50 animate-pulse rounded-2xl" />
+              <div
+                key={i}
+                className="card p-4 h-56 bg-neutral-50 animate-pulse rounded-2xl"
+              />
             ))}
           </div>
         </motion.div>

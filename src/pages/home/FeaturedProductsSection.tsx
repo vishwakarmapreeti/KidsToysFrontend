@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Star, Heart, ShoppingCart, ArrowRight, Zap } from 'lucide-react';
 
@@ -127,6 +127,8 @@ function ProductCard({ product }: { product: typeof products[0] }) {
     ? Math.round(((product.price - product.discountPrice) / product.price) * 100)
     : 0;
 
+    const navigate = useNavigate();
+
   return (
     <motion.div
       whileHover={{ y: -4 }}
@@ -141,7 +143,9 @@ function ProductCard({ product }: { product: typeof products[0] }) {
           className="w-full h-52 object-cover transition-transform duration-500 group-hover:scale-105"
         />
         {/* Badge */}
-        <span className={`absolute top-3 left-3 ${product.badgeColor} text-white text-2xs font-bold px-2.5 py-1 rounded-full`}>
+        <span
+          className={`absolute top-3 left-3 ${product.badgeColor} text-white text-2xs font-bold px-2.5 py-1 rounded-full`}
+        >
           {product.badge}
         </span>
         {discount > 0 && (
@@ -151,7 +155,10 @@ function ProductCard({ product }: { product: typeof products[0] }) {
         )}
         {/* Hover Actions */}
         <div className="absolute inset-x-0 bottom-0 flex gap-2 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-          <button className="flex-1 flex items-center justify-center gap-1.5 bg-white/95 backdrop-blur-sm rounded-xl py-2 text-xs font-semibold text-neutral-800 hover:bg-primary-500 hover:text-white transition-all duration-200 shadow-sm">
+          <button
+            onClick={() => navigate("/shop")}
+            className="flex-1 flex items-center justify-center gap-1.5 bg-white/95 backdrop-blur-sm rounded-xl py-2 text-xs font-semibold text-neutral-800 hover:bg-primary-500 hover:text-white transition-all duration-200 shadow-sm"
+          >
             <ShoppingCart className="w-3.5 h-3.5" />
             Add to Cart
           </button>
@@ -163,23 +170,35 @@ function ProductCard({ product }: { product: typeof products[0] }) {
 
       {/* Content */}
       <div className="p-4 flex flex-col flex-1">
-        <p className="text-2xs font-semibold text-neutral-400 uppercase tracking-wide mb-1">{product.brand}</p>
-        <Link to={`/product/${product.id}`} className="font-display font-semibold text-sm text-neutral-900 line-clamp-2 hover:text-primary-600 transition-colors mb-2 leading-snug flex-1">
+        <p className="text-2xs font-semibold text-neutral-400 uppercase tracking-wide mb-1">
+          {product.brand}
+        </p>
+        <Link
+          to={`/product/${product.id}`}
+          className="font-display font-semibold text-sm text-neutral-900 line-clamp-2 hover:text-primary-600 transition-colors mb-2 leading-snug flex-1"
+        >
           {product.name}
         </Link>
 
         <div className="flex items-center gap-2 mb-3">
           <StarRating rating={product.ratings} />
-          <span className="text-xs text-neutral-500">({product.numReviews})</span>
+          <span className="text-xs text-neutral-500">
+            ({product.numReviews})
+          </span>
         </div>
 
         <div className="flex items-center justify-between">
           <div className="flex items-baseline gap-2">
             <span className="font-display font-bold text-lg text-neutral-900">
-              ₹{product.discountPrice > 0 ? product.discountPrice.toFixed(2) : product.price.toFixed(2)}
+              ₹
+              {product.discountPrice > 0
+                ? product.discountPrice.toFixed(2)
+                : product.price.toFixed(2)}
             </span>
             {product.discountPrice > 0 && (
-              <span className="text-xs text-neutral-400 line-through">${product.price.toFixed(2)}</span>
+              <span className="text-xs text-neutral-400 line-through">
+                ${product.price.toFixed(2)}
+              </span>
             )}
           </div>
           <span className="text-2xs font-medium text-neutral-500 bg-neutral-100 px-2 py-0.5 rounded-full">

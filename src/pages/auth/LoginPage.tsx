@@ -1,47 +1,56 @@
-import { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { motion } from 'framer-motion';
-import { Mail, Lock, Star, ArrowRight } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
+import { useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { motion } from "framer-motion";
+import { Mail, Lock, Star, ArrowRight } from "lucide-react";
 
-import FormInput from '../../components/common/FormInput';
-import AlertMessage from '../../components/common/AlertMessage';
-import LoadingSpinner from '../../components/common/LoadingSpinner';
-import authService from '../../services/authService';
+import FormInput from "../../components/common/FormInput";
+import AlertMessage from "../../components/common/AlertMessage";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
+import authService from "../../services/authService";
+import { useAppDispatch } from "../../store/hooks";
+import { setCredentials } from "../../store/slices/authSlice";
 
 const schema = z.object({
-  email:    z.string().email('Enter a valid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  email: z.string().email("Enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 type FormData = z.infer<typeof schema>;
 
 export default function LoginPage() {
-  const { login } = useAuth();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const location = useLocation();
-  const from = (location.state as any)?.from?.pathname || '/';
-  const [serverError, setServerError] = useState('');
+  const from = (location.state as any)?.from?.pathname || "/";
+  const [serverError, setServerError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
   const onSubmit = async (data: FormData) => {
-    setServerError('');
+    setServerError("");
     setIsLoading(true);
     try {
       const res = await authService.login(data);
       if (res.data.user && res.data.token) {
-        login(res.data.user, res.data.token);
+        dispatch(
+          setCredentials({ user: res.data.user, token: res.data.token }),
+        );
         navigate(from, { replace: true });
       }
     } catch (err: any) {
-      setServerError(err.response?.data?.message || 'Login failed. Please try again.');
+      setServerError(
+        err.response?.data?.message || "Login failed. Please try again.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -80,18 +89,38 @@ export default function LoginPage() {
             Welcome Back!
           </h2>
           <p className="text-neutral-600 leading-relaxed">
-            Sign in to access your orders, wishlist, and exclusive deals on premium kids toys.
+            Sign in to access your orders, wishlist, and exclusive deals on
+            premium kids toys.
           </p>
 
           <div className="mt-8 flex flex-col gap-3">
-            {['Safe & Certified Toys', 'Free Shipping on $50+', 'Easy 30-Day Returns'].map((text) => (
-              <div key={text} className="flex items-center gap-2.5 bg-white/60 rounded-xl px-4 py-2.5">
+            {[
+              "Safe & Certified Toys",
+              "Free Shipping on $50+",
+              "Easy 30-Day Returns",
+            ].map((text) => (
+              <div
+                key={text}
+                className="flex items-center gap-2.5 bg-white/60 rounded-xl px-4 py-2.5"
+              >
                 <div className="w-5 h-5 rounded-full bg-accent-500 flex items-center justify-center flex-shrink-0">
-                  <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  <svg
+                    className="w-3 h-3 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={3}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
                   </svg>
                 </div>
-                <span className="text-sm font-medium text-neutral-700">{text}</span>
+                <span className="text-sm font-medium text-neutral-700">
+                  {text}
+                </span>
               </div>
             ))}
           </div>
@@ -117,9 +146,15 @@ export default function LoginPage() {
           </Link>
 
           <div className="mb-8">
-            <h1 className="font-display font-bold text-3xl text-neutral-900 mb-2">Sign In</h1>
-            <p className="text-neutral-500">New here?{' '}
-              <Link to="/register" className="text-primary-600 font-medium hover:text-primary-700 transition-colors">
+            <h1 className="font-display font-bold text-3xl text-neutral-900 mb-2">
+              Sign In
+            </h1>
+            <p className="text-neutral-500">
+              New here?{" "}
+              <Link
+                to="/register"
+                className="text-primary-600 font-medium hover:text-primary-700 transition-colors"
+              >
                 Create an account
               </Link>
             </p>
@@ -129,14 +164,14 @@ export default function LoginPage() {
             <AlertMessage
               type="error"
               message={serverError}
-              onClose={() => setServerError('')}
+              onClose={() => setServerError("")}
               className="mb-5"
             />
           )}
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <FormInput
-              {...register('email')}
+              {...register("email")}
               label="Email Address"
               type="email"
               placeholder="you@example.com"
@@ -146,7 +181,7 @@ export default function LoginPage() {
             />
 
             <FormInput
-              {...register('password')}
+              {...register("password")}
               label="Password"
               placeholder="Enter your password"
               icon={<Lock className="w-4 h-4" />}
@@ -157,10 +192,16 @@ export default function LoginPage() {
 
             <div className="flex items-center justify-between">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" className="w-4 h-4 rounded border-neutral-300 text-primary-500 focus:ring-primary-400 accent-primary-500" />
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 rounded border-neutral-300 text-primary-500 focus:ring-primary-400 accent-primary-500"
+                />
                 <span className="text-sm text-neutral-600">Remember me</span>
               </label>
-              <Link to="/forgot-password" className="text-sm text-primary-600 font-medium hover:text-primary-700 transition-colors">
+              <Link
+                to="/forgot-password"
+                className="text-sm text-primary-600 font-medium hover:text-primary-700 transition-colors"
+              >
                 Forgot password?
               </Link>
             </div>
@@ -185,10 +226,20 @@ export default function LoginPage() {
           </form>
 
           <p className="mt-6 text-center text-xs text-neutral-400">
-            By signing in, you agree to our{' '}
-            <Link to="#" className="text-neutral-600 hover:text-neutral-800 underline">Terms</Link>{' '}
-            and{' '}
-            <Link to="#" className="text-neutral-600 hover:text-neutral-800 underline">Privacy Policy</Link>
+            By signing in, you agree to our{" "}
+            <Link
+              to="#"
+              className="text-neutral-600 hover:text-neutral-800 underline"
+            >
+              Terms
+            </Link>{" "}
+            and{" "}
+            <Link
+              to="#"
+              className="text-neutral-600 hover:text-neutral-800 underline"
+            >
+              Privacy Policy
+            </Link>
           </p>
         </motion.div>
       </div>

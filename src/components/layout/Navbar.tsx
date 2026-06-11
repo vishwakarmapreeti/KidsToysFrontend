@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, Heart, Search, Menu, X, User, LogOut, ChevronDown, Star, Package } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
-import { useCart } from '../../context/CartContext';
-import { useWishlist } from '../../context/WishlistContext';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { clearCredentials, logoutUser } from '../../store/slices/authSlice';
+import { openCart, selectCartCount } from '../../store/slices/cartSlice';
+import { selectWishlistCount } from '../../store/slices/wishlistSlice';
+
 
 const navLinks = [
   { label: 'Home', href: '/' },
@@ -15,7 +17,6 @@ const navLinks = [
 ];
 
 export default function Navbar() {
-  const { isAuthenticated, user, logout } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -23,8 +24,12 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
-  const { cartCount, openCart }      = useCart();
-const { wishlistCount }            = useWishlist();
+
+const { isAuthenticated, user } = useAppSelector((state) => state.auth);
+  const cartCount = useAppSelector((state) => selectCartCount(state));
+  const wishlistCount = useAppSelector((state) => selectWishlistCount(state));
+
+const dispatch = useAppDispatch();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -38,7 +43,8 @@ const { wishlistCount }            = useWishlist();
   }, [location.pathname]);
 
   const handleLogout = async () => {
-    await logout();
+    await dispatch(logoutUser()).unwrap();
+    dispatch(clearCredentials());
     navigate('/');
   };
 
@@ -114,7 +120,7 @@ const { wishlistCount }            = useWishlist();
 </Link>
 
               {/* Cart */}
-            <button onClick={openCart} className="relative p-2">
+            <button onClick={()=> dispatch(openCart())} className="relative p-2">
   <ShoppingCart className="w-5 h-5" />
   {cartCount > 0 && (
     <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
@@ -274,7 +280,7 @@ const { wishlistCount }            = useWishlist();
               className="w-full max-w-xl bg-white rounded-3xl shadow-card-hover p-4"
             >
               <form onSubmit={handleSearch} className="flex items-center gap-3">
-                <Search className="w-5 h-5 text-neutral-400 flex-shrink-0" />
+                <Search className="w-5 h-5 text-neutral-400 shrink-0" />
                 <input
                   autoFocus
                   type="text"

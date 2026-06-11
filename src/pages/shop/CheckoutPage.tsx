@@ -6,10 +6,10 @@ import {
   ShoppingBag, ArrowLeft, Check, Phone
 } from 'lucide-react';
 import Layout from '../../components/layout/Layout';
-import { useCart } from '../../context/CartContext';
-import { useAuth } from '../../context/AuthContext';
 import orderService from '../../services/orderService';
 import type { ShippingAddress } from '../../services/orderService';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { clearCart } from '../../store/slices/cartSlice';
 
 declare global {
   interface Window { Razorpay: any; }
@@ -18,9 +18,10 @@ declare global {
 const STEPS = ['Shipping', 'Payment', 'Review'];
 
 export default function CheckoutPage() {
-  const { cart, clearCart }    = useCart();
-  const { user }               = useAuth();
+  const cart                   = useAppSelector((state) => state.cart.cart);
+  const user                   = useAppSelector((state) => state.auth.user);
   const navigate               = useNavigate();
+  const dispatch = useAppDispatch();
 
   const [step, setStep]         = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -96,7 +97,7 @@ export default function CheckoutPage() {
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature:  response.razorpay_signature,
             });
-            await clearCart();
+            await dispatch(clearCart()).unwrap();
             navigate(`/order-success/${order._id}`);
           } catch {
             setError('Payment verification failed. Contact support.');
@@ -120,7 +121,7 @@ export default function CheckoutPage() {
     }
   };
 
-  if (!cart) return null;
+  if (!cart) return <></>;
 
   return (
     <Layout>
